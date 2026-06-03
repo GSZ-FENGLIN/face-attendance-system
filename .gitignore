@@ -1,6 +1,3 @@
-# === 敏感配置（含数据库密码） ===
-backend/src/main/resources/application.yml
-
 # === Maven 构建 ===
 backend/target/
 *.jar
