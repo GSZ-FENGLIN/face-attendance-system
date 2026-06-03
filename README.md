@@ -135,7 +135,9 @@ npm run dev
 - **欧氏距离比对**: 计算特征向量之间的距离，阈值 0.6 判定是否匹配
 
 使用 Python 的 `face_recognition` 库（基于 dlib + 深度学习）封装上述算法，提供 RESTful API 供后端调用。
-##截图展示
+
+## 截图展示
+
 <img width="1912" height="914" alt="image" src="https://github.com/user-attachments/assets/5b740f9c-661f-47ea-8d39-c3968aa0836c" />
 <img width="1912" height="914" alt="image" src="https://github.com/user-attachments/assets/f05c0365-568b-4c8e-8aa9-4e9f4ccd43d2" />
 <img width="1912" height="914" alt="image" src="https://github.com/user-attachments/assets/6f9a6570-8363-4435-bab4-cd276983ef25" />
