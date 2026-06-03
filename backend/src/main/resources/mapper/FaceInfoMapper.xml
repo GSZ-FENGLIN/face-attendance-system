@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.attendance.mapper.FaceInfoMapper">
+
+    <resultMap id="BaseMap" type="FaceInfo">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="face_encoding" property="faceEncoding"/>
+        <result column="image_url" property="imageUrl"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <select id="findByUserId" resultMap="BaseMap">
+        SELECT * FROM face_info WHERE user_id = #{userId}
+    </select>
+
+    <select id="findAllEncoded" resultMap="BaseMap">
+        SELECT f.*, u.real_name, u.student_no FROM face_info f
+        INNER JOIN user u ON f.user_id = u.id
+        WHERE u.status = 1 AND u.face_registered = 1
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO face_info(user_id, face_encoding, image_url)
+        VALUES(#{userId}, #{faceEncoding}, #{imageUrl})
+    </insert>
+
+    <delete id="deleteByUserId">
+        DELETE FROM face_info WHERE user_id = #{userId}
+    </delete>
+</mapper>

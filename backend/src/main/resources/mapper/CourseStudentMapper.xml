@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.attendance.mapper.CourseStudentMapper">
+
+    <resultMap id="BaseMap" type="CourseStudent">
+        <id column="id" property="id"/>
+        <result column="course_id" property="courseId"/>
+        <result column="student_id" property="studentId"/>
+        <result column="student_name" property="studentName"/>
+        <result column="student_no" property="studentNo"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <select id="findByCourseId" resultMap="BaseMap">
+        SELECT * FROM course_student WHERE course_id = #{courseId}
+    </select>
+
+    <select id="findByStudentId" resultMap="BaseMap">
+        SELECT * FROM course_student WHERE student_id = #{studentId}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO course_student(course_id, student_id, student_name, student_no)
+        VALUES(#{courseId}, #{studentId}, #{studentName}, #{studentNo})
+    </insert>
+
+    <delete id="deleteByCourseId">
+        DELETE FROM course_student WHERE course_id = #{courseId}
+    </delete>
+
+    <delete id="deleteById">
+        DELETE FROM course_student WHERE id = #{id}
+    </delete>
+
+    <select id="countByCourseId" resultType="int">
+        SELECT COUNT(*) FROM course_student WHERE course_id = #{courseId}
+    </select>
+</mapper>

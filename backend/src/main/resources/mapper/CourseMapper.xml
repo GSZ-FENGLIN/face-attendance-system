@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.attendance.mapper.CourseMapper">
+
+    <resultMap id="BaseMap" type="Course">
+        <id column="id" property="id"/>
+        <result column="course_name" property="courseName"/>
+        <result column="course_code" property="courseCode"/>
+        <result column="teacher_id" property="teacherId"/>
+        <result column="teacher_name" property="teacherName"/>
+        <result column="class_name" property="className"/>
+        <result column="classroom" property="classroom"/>
+        <result column="week_day" property="weekDay"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="week_start" property="weekStart"/>
+        <result column="week_end" property="weekEnd"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <select id="findById" resultMap="BaseMap">
+        SELECT * FROM course WHERE id = #{id}
+    </select>
+
+    <select id="findByTeacherId" resultMap="BaseMap">
+        SELECT * FROM course WHERE teacher_id = #{teacherId} ORDER BY week_day, start_time
+    </select>
+
+    <select id="findList" resultMap="BaseMap">
+        SELECT * FROM course
+        <where>
+            <if test="keyword != null and keyword != ''">AND (course_name LIKE CONCAT('%',#{keyword},'%') OR course_code LIKE CONCAT('%',#{keyword},'%'))</if>
+            <if test="teacherId != null">AND teacher_id = #{teacherId}</if>
+            <if test="className != null and className != ''">AND class_name LIKE CONCAT('%',#{className},'%')</if>
+        </where>
+        ORDER BY create_time DESC LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countList" resultType="long">
+        SELECT COUNT(*) FROM course
+        <where>
+            <if test="keyword != null and keyword != ''">AND (course_name LIKE CONCAT('%',#{keyword},'%') OR course_code LIKE CONCAT('%',#{keyword},'%'))</if>
+            <if test="teacherId != null">AND teacher_id = #{teacherId}</if>
+            <if test="className != null and className != ''">AND class_name LIKE CONCAT('%',#{className},'%')</if>
+        </where>
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO course(course_name, course_code, teacher_id, teacher_name, class_name, classroom,
+                          week_day, start_time, end_time, week_start, week_end, status)
+        VALUES(#{courseName}, #{courseCode}, #{teacherId}, #{teacherName}, #{className}, #{classroom},
+               #{weekDay}, #{startTime}, #{endTime}, #{weekStart}, #{weekEnd}, 1)
+    </insert>
+
+    <update id="update">
+        UPDATE course
+        <set>
+            <if test="courseName != null">course_name = #{courseName},</if>
+            <if test="classroom != null">classroom = #{classroom},</if>
+            <if test="weekDay != null">week_day = #{weekDay},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="weekStart != null">week_start = #{weekStart},</if>
+            <if test="weekEnd != null">week_end = #{weekEnd},</if>
+            <if test="status != null">status = #{status},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM course WHERE id = #{id}
+    </delete>
+</mapper>

@@ -1,0 +1,35 @@
+# === 敏感配置（含数据库密码） ===
+backend/src/main/resources/application.yml
+
+# === Maven 构建 ===
+backend/target/
+*.jar
+*.war
+
+# === Node 依赖 ===
+frontend/node_modules/
+frontend/dist/
+
+# === Python ===
+face-service/__pycache__/
+face-service/*.pyc
+face-service/uploads/
+face-service/*.log
+face-service/venv/
+
+# === IDE ===
+.idea/
+*.iml
+.vscode/
+.project
+.classpath
+.settings/
+
+# === OS ===
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# === 日志 ===
+*.log

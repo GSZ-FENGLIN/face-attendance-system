@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.attendance.mapper.AttendanceRecordMapper">
+
+    <resultMap id="BaseMap" type="AttendanceRecord">
+        <id column="id" property="id"/>
+        <result column="course_id" property="courseId"/>
+        <result column="course_name" property="courseName"/>
+        <result column="student_id" property="studentId"/>
+        <result column="student_name" property="studentName"/>
+        <result column="student_no" property="studentNo"/>
+        <result column="class_name" property="className"/>
+        <result column="status" property="status"/>
+        <result column="sign_time" property="signTime"/>
+        <result column="week_num" property="weekNum"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <select id="findById" resultMap="BaseMap">
+        SELECT * FROM attendance_record WHERE id = #{id}
+    </select>
+
+    <select id="findList" resultMap="BaseMap">
+        SELECT * FROM attendance_record
+        <where>
+            <if test="courseId != null">AND course_id = #{courseId}</if>
+            <if test="studentId != null">AND student_id = #{studentId}</if>
+            <if test="studentName != null">AND student_name LIKE CONCAT('%',#{studentName},'%')</if>
+            <if test="studentNo != null">AND student_no LIKE CONCAT('%',#{studentNo},'%')</if>
+            <if test="className != null">AND class_name LIKE CONCAT('%',#{className},'%')</if>
+            <if test="status != null">AND status = #{status}</if>
+            <if test="weekNum != null">AND week_num = #{weekNum}</if>
+            <if test="startDate != null">AND date(sign_time) &gt;= #{startDate}</if>
+            <if test="endDate != null">AND date(sign_time) &lt;= #{endDate}</if>
+        </where>
+        ORDER BY create_time DESC LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countList" resultType="long">
+        SELECT COUNT(*) FROM attendance_record
+        <where>
+            <if test="courseId != null">AND course_id = #{courseId}</if>
+            <if test="studentId != null">AND student_id = #{studentId}</if>
+            <if test="studentName != null">AND student_name LIKE CONCAT('%',#{studentName},'%')</if>
+            <if test="studentNo != null">AND student_no LIKE CONCAT('%',#{studentNo},'%')</if>
+            <if test="className != null">AND class_name LIKE CONCAT('%',#{className},'%')</if>
+            <if test="status != null">AND status = #{status}</if>
+            <if test="weekNum != null">AND week_num = #{weekNum}</if>
+            <if test="startDate != null">AND date(sign_time) &gt;= #{startDate}</if>
+            <if test="endDate != null">AND date(sign_time) &lt;= #{endDate}</if>
+        </where>
+    </select>
+
+    <select id="findByCourseAndWeek" resultMap="BaseMap">
+        SELECT * FROM attendance_record WHERE course_id = #{courseId} AND week_num = #{weekNum}
+    </select>
+
+    <select id="findByStudentId" resultMap="BaseMap">
+        SELECT * FROM attendance_record WHERE student_id = #{studentId}
+        ORDER BY create_time DESC LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countByStudentId" resultType="long">
+        SELECT COUNT(*) FROM attendance_record WHERE student_id = #{studentId}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO attendance_record(course_id, course_name, student_id, student_name, student_no, class_name, status, sign_time, week_num)
+        VALUES(#{courseId}, #{courseName}, #{studentId}, #{studentName}, #{studentNo}, #{className}, #{status}, #{signTime}, #{weekNum})
+    </insert>
+
+    <insert id="insertBatch">
+        INSERT INTO attendance_record(course_id, course_name, student_id, student_name, student_no, class_name, status, week_num)
+        VALUES
+        <foreach collection="list" item="r" separator=",">
+            (#{r.courseId}, #{r.courseName}, #{r.studentId}, #{r.studentName}, #{r.studentNo}, #{r.className}, #{r.status}, #{r.weekNum})
+        </foreach>
+    </insert>
+
+    <update id="update">
+        UPDATE attendance_record
+        SET status = #{status}, sign_time = #{signTime}
+        WHERE id = #{id}
+    </update>
+
+    <select id="statisticsByCourse" resultType="java.util.Map">
+        SELECT
+            status,
+            COUNT(*) as count
+        FROM attendance_record
+        WHERE course_id = #{courseId}
+        GROUP BY status
+    </select>
+
+    <select id="statisticsByStudent" resultType="java.util.Map">
+        SELECT
+            COUNT(*) as total,
+            SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END) as present,
+            SUM(CASE WHEN status = 0 THEN 1 ELSE 0 END) as absent,
+            SUM(CASE WHEN status = 2 THEN 1 ELSE 0 END) as late
+        FROM attendance_record
+        WHERE course_id = #{courseId} AND student_id = #{studentId}
+    </select>
+</mapper>
